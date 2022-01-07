@@ -32,7 +32,7 @@ debug:
 
 .PHONY:clean
 clean:
-	rm -fv mt main.o partie1.o partie2.o partie3.o 
+	rm -fv mt *.o
 
 .PHONY: zip
 zip: 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 
 typedef struct Bande {
@@ -13,22 +14,28 @@ typedef struct Bande {
 	struct Bande *suiv;
 } bande;
 
-enum Deplacement {
-	droite,
-	gauche,
-	place
-};
-
-//structure des deltas fonctions qui contiendront l'enum déplacement
+typedef struct Delta {
+	char etatDepart;
+	char lettreLue;
+	char etatArrivee;
+	char lettreEc;
+	enum Deplacement {
+		droite,
+		gauche,
+		place
+	} dep;
+} delta;
 
 typedef struct MachineTuring {
 	char etatCourant;
 	bande* tete;
-	//Delta fonctions
+	uint16_t nbDeltas;
+	delta *transitions;
+	char etatFinal;
 } MT;
 
 
-MT Init_MT (char *, char *);
+MT Init_MT (const char *,const char *);
 
 void Exec_Pas (MT *);
 

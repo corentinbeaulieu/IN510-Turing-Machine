@@ -9,7 +9,8 @@ int main (int argc, const char *argv[]) {
 
 	MT mt;
 	mt = Init_MT(argv[1], argv[2]);
-	Exec_Total(&mt);
+	Affiche_Bande(mt.tete);
+//	Exec_Total(&mt);
 
 	Desalloc_MT(&mt);
 
