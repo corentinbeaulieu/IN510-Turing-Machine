@@ -22,7 +22,10 @@ partie3.o: partie3.c partie3.h partie2.h
 
 .PHONY: test
 test: mt
-	# ./mt ficheir mot
+	./mt ../mt/mt1 000
+	./mt -6 ../mt/mtQ6 mtQuestion6
+	./mt mtQuestion6 111
+
 
 .PHONY: debug
 debug:

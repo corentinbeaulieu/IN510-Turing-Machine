@@ -72,13 +72,11 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 		}
 		else if(etatFinal[j] == '\0') break;
 	}
-	printf("%s", etatFinal);
 
 
 	//Puis les transitions
 	int i = 0;
 	while (fgets(buff, 255, file)) {
-		printf("%i\n", i);
 		char *token = strtok(buff, delim);
 		strcpy(transitions[i].etatDepart, token);
 
@@ -111,8 +109,7 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 
 MT Init_MT(const char *fichier, const char *mot) {
 	MT mt;
-	strcpy(mt.etatCourant, "A\0");
-	strcpy(mt.etatFinal, "\0");
+	strcpy(mt.etatCourant, "A");
 	mt.tete = Init_Bande(mot);
 	mt.transitions = Init_Delta(fichier, &(mt.nbDeltas), mt.etatFinal);
 
@@ -306,6 +303,8 @@ void Ecriture_MT(MT *mt, const char *chemin) {
 				break;
 		}
 	}
+
+	fclose(file);
 }
 
 
@@ -319,6 +318,7 @@ void Desalloc_Bande(bande *b) {
 		free(b);
 		b = suiv;
 	}
+	free(b);
 }
 
 
