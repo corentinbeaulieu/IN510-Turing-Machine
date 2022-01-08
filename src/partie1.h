@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 enum ERREUR {
 	ERR_USAGE=1,
@@ -24,9 +25,9 @@ typedef struct Bande {
 } bande;
 
 typedef struct Delta {
-	char etatDepart;
+	char etatDepart[8];
 	char lettreLue;
-	char etatArrivee;
+	char etatArrivee[8];
 	char lettreEc;
 	enum Deplacement {
 		droite,
@@ -36,11 +37,11 @@ typedef struct Delta {
 } delta;
 
 typedef struct MachineTuring {
-	char etatCourant;
+	char etatCourant[8];
 	bande* tete;
 	uint16_t nbDeltas;
 	delta *transitions;
-	char etatFinal;
+	char etatFinal[8];
 } MT;
 
 

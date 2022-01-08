@@ -1,5 +1,4 @@
 
-#include <string.h>
 #include "partie3.h"
 
 int main (int argc, char *const argv[]) {
@@ -12,7 +11,7 @@ int main (int argc, char *const argv[]) {
 	char option;
 
 	opterr = 0;
-	while((option = getopt(argc, argv, "b67o")) != -1) {
+	while((option = getopt(argc, argv, "b67O")) != -1) {
 		switch(option) {
 			case 'b':
 				biinfinie = true;
@@ -26,14 +25,16 @@ int main (int argc, char *const argv[]) {
 				question7 = true;
 				break;
 
-			case 'o':
+			case 'O':
 				optimisation = true;
+				break;
 
 			case '?':
-				fprintf(stderr, "ERREUR: l'option -%c est inconnue\n", option);
+				fprintf(stderr, "ERREUR: l'option -%c est inconnue\n", optopt);
 				return ERR_USAGE;
+
 			default: 
-				abort();
+				return ERR_USAGE;
 		}
 	}
 
@@ -114,6 +115,7 @@ int main (int argc, char *const argv[]) {
 
 	else {
 		mt = Init_MT(argv[optind], argv[optind+1]);
+		Ecriture_MT(&mt, "sortieMT");
 		Exec_Total(&mt, biinfinie);
 	}
 

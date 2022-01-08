@@ -1,6 +1,6 @@
 
 #include "partie1.h"
-#include <string.h>
+
 
 bande *Init_Bande(const char *mot) {
 	bande *b, *prec;
@@ -42,7 +42,7 @@ bande *Init_Bande(const char *mot) {
  *  - Les retours à la ligne servent à séparer deux deltas transitions
  *  - La moindre faute dans le fichier par rapport à cela produit une erreur
  */
-delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
+delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 	FILE *file;
 	file = fopen (fichier, "r");
 
@@ -63,19 +63,30 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
 	delta *transitions = malloc(sizeof(delta) * *nbDeltas);
 
 	//On récupère l'état final (première ligne)
-	fgets(etatFinal, 255, file);
+	fgets(etatFinal, 8, file);
+	int j;
+	for(j = 0; j < 8; j++) {
+		if(etatFinal[j] == '\n') {
+			etatFinal[j] = '\0';
+			break;
+		}
+		else if(etatFinal[j] == '\0') break;
+	}
+	printf("%s", etatFinal);
+
 
 	//Puis les transitions
 	int i = 0;
 	while (fgets(buff, 255, file)) {
+		printf("%i\n", i);
 		char *token = strtok(buff, delim);
-		transitions[i].etatDepart = token[0];
+		strcpy(transitions[i].etatDepart, token);
 
 		token = strtok(NULL, delim);
 		transitions[i].lettreLue = token[0];
 
 		token = strtok(NULL, delim);
-		transitions[i].etatArrivee = token[0];
+		strcpy(transitions[i].etatArrivee, token);
 
 		token = strtok(NULL, delim);
 		transitions[i].lettreEc = token[0];
@@ -100,9 +111,10 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
 
 MT Init_MT(const char *fichier, const char *mot) {
 	MT mt;
-	mt.etatCourant = 'A';
+	strcpy(mt.etatCourant, "A\0");
+	strcpy(mt.etatFinal, "\0");
 	mt.tete = Init_Bande(mot);
-	mt.transitions = Init_Delta(fichier, &(mt.nbDeltas), &(mt.etatFinal));
+	mt.transitions = Init_Delta(fichier, &(mt.nbDeltas), mt.etatFinal);
 
 	return mt;
 }
@@ -150,7 +162,7 @@ void Exec_Pas_Semiinfinie (MT *mt) {
 	delta del;
 	for(i = 0; i < mt->nbDeltas; i++) {
 		del = mt->transitions[i];
-		if(del.etatDepart == mt->etatCourant && del.lettreLue == mt->tete->contenu) 
+		if(!strcmp(del.etatDepart, mt->etatCourant) && del.lettreLue == mt->tete->contenu) 
 			break;
 	}
 
@@ -159,7 +171,7 @@ void Exec_Pas_Semiinfinie (MT *mt) {
 		exit(ERR_TRANS_IMP);
 	}
 
-	mt->etatCourant = del.etatArrivee;
+	strcpy(mt->etatCourant, del.etatArrivee);
 	mt->tete->contenu = del.lettreEc;
 
 	switch(del.dep) {
@@ -188,7 +200,7 @@ void Exec_Pas_Biinfinie (MT *mt) {
 	delta del;
 	for(i = 0; i < mt->nbDeltas; i++) {
 		del = mt->transitions[i];
-		if(del.etatDepart == mt->etatCourant && del.lettreLue == mt->tete->contenu) 
+		if(!strcmp(del.etatDepart, mt->etatCourant) && del.lettreLue == mt->tete->contenu) 
 			break;
 	}
 
@@ -197,7 +209,7 @@ void Exec_Pas_Biinfinie (MT *mt) {
 		exit(ERR_TRANS_IMP);
 	}
 
-	mt->etatCourant = del.etatArrivee;
+	strcpy(mt->etatCourant, del.etatArrivee);
 	mt->tete->contenu = del.lettreEc;
 
 	switch(del.dep) {
@@ -226,9 +238,9 @@ void Exec_Total(MT *mt, bool biinfinie) {
 	uint64_t iter;
 	iter = 1;
 	if(biinfinie) {
-		while(mt->etatCourant != mt->etatFinal) {
+		while(strcmp(mt->etatCourant, mt->etatFinal)) {
 			printf("Etape %lu :\n", iter);
-			printf("Etat courant : %c\n", mt->etatCourant);
+			printf("Etat courant : %s\n", mt->etatCourant);
 			Affiche_Bande(mt->tete);
 			Exec_Pas_Biinfinie(mt);
 			iter++;
@@ -236,9 +248,9 @@ void Exec_Total(MT *mt, bool biinfinie) {
 	}
 
 	else {
-		while(mt->etatCourant != mt->etatFinal) {
+		while(strcmp(mt->etatCourant, mt->etatFinal)) {
 			printf("Etape %lu :\n", iter);
-			printf("Etat courant : %c\n", mt->etatCourant);
+			printf("Etat courant : %s\n", mt->etatCourant);
 			Affiche_Bande(mt->tete);
 			Exec_Pas_Semiinfinie(mt);
 			iter++;
@@ -246,10 +258,9 @@ void Exec_Total(MT *mt, bool biinfinie) {
 	}
 
 	printf("Fin du calcul\n");
-	printf("Etat courant : %c\n", mt->etatCourant);
+	printf("Etat courant : %s\n", mt->etatCourant);
 	Affiche_Bande(mt->tete);
 }
-
 
 
 void Affiche_Bande(bande *b) {
@@ -277,10 +288,10 @@ void Ecriture_MT(MT *mt, const char *chemin) {
 		exit(ERR_OUV_FICHIER);
 	}
 
-	fprintf(file, "%c\n", mt->etatFinal);
+	fprintf(file, "%s\n", mt->etatFinal);
 	uint16_t i;
 	for(i=0; i< mt->nbDeltas; i++) {
-		fprintf(file, "%c,%c,%c,%c,", mt->transitions[i].etatDepart, mt->transitions[i].lettreLue, mt->transitions[i].etatArrivee, mt->transitions[i].lettreEc);
+		fprintf(file, "%s,%c,%s,%c,", mt->transitions[i].etatDepart, mt->transitions[i].lettreLue, mt->transitions[i].etatArrivee, mt->transitions[i].lettreEc);
 		switch(mt->transitions[i].dep) {
 			case droite:
 				fprintf(file, ">\n");
