@@ -32,7 +32,7 @@ debug:
 
 .PHONY:clean
 clean:
-	rm -fv mt *.o
+	rm -fv mt *.o sortieMT
 
 .PHONY: zip
 zip: 

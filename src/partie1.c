@@ -47,7 +47,7 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
 	file = fopen (fichier, "r");
 
 	if (!file) {
-		printf("\nErreur : le fichier %s n'a pas pu être ouvert.\n\n", fichier);
+		fprintf(stderr, "\nErreur : le fichier %s n'a pas pu être ouvert.\n\n", fichier);
 		exit(ERR_OUV_FICHIER);
 	}
 
@@ -269,7 +269,32 @@ void Affiche_Bande(bande *b) {
 
 
 void Ecriture_MT(MT *mt, const char *chemin) {
+	FILE *file;
+	file = fopen (chemin, "w");
 
+	if (!file) {
+		fprintf(stderr, "\nErreur : le fichier %s n'a pas pu être ouvert.\n\n", chemin);
+		exit(ERR_OUV_FICHIER);
+	}
+
+	fprintf(file, "%c\n", mt->etatFinal);
+	uint16_t i;
+	for(i=0; i< mt->nbDeltas; i++) {
+		fprintf(file, "%c,%c,%c,%c,", mt->transitions[i].etatDepart, mt->transitions[i].lettreLue, mt->transitions[i].etatArrivee, mt->transitions[i].lettreEc);
+		switch(mt->transitions[i].dep) {
+			case droite:
+				fprintf(file, ">\n");
+				break;
+
+			case gauche:
+				fprintf(file, "<\n");
+				break;
+
+			case place:
+				fprintf(file, "-\n");
+				break;
+		}
+	}
 }
 
 
