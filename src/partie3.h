@@ -4,9 +4,9 @@
 
 #include "partie2.h"
 
-MT Optimisation_MT (MT);
+void Question9 (MT *);
 
-MT Elimination_Code_Mort (MT);
+void Question10 (MT *);
 
 
 

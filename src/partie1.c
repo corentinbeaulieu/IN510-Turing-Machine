@@ -14,8 +14,8 @@ bande *Init_Bande(const char *mot) {
 		prec = b;
 		b = malloc(sizeof(bande));
 		if(!b) {
-			//ERREUR
-			exit(1);
+			fprintf(stderr, "ERREUR : Echec d'allocation d'une case de la bande\n");
+			exit(ERR_ALLOC);
 		}
 		b->contenu = lu;
 		b->prec = prec;
@@ -48,7 +48,7 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
 
 	if (!file) {
 		printf("\nErreur : le fichier %s n'a pas pu être ouvert.\n\n", fichier);
-		exit(2);
+		exit(ERR_OUV_FICHIER);
 	}
 
 	char buff[255];
@@ -110,8 +110,8 @@ MT Init_MT(const char *fichier, const char *mot) {
 void Ajout_Case_Suiv(bande *b) {
 	b->suiv = malloc(sizeof(bande));
 	if(b->suiv == NULL) {
-		// Gestion de l'erreur
-		exit(1);
+		fprintf(stderr, "ERREUR : Echec d'allocation d'une case de la bande\n");
+		exit(ERR_ALLOC);
 	}
 
 	b->suiv->contenu = '_';
@@ -120,10 +120,10 @@ void Ajout_Case_Suiv(bande *b) {
 }
 
 void Ajout_Case_Prec(bande *b) {
-	b->suiv = malloc(sizeof(bande));
+	b->prec = malloc(sizeof(bande));
 	if(b->prec == NULL) {
-		// Gestion de l'erreur
-		exit(1);
+		fprintf(stderr, "ERREUR : Echec d'allocation d'une case de la bande\n");
+		exit(ERR_ALLOC);
 	}
 
 	b->prec->contenu = '_';
@@ -145,11 +145,7 @@ void Suppr_Case_Prec(bande *b) {
 	}
 }
 
-
-
-void Exec_Pas (MT *mt) {
-	// Que faire si la MT est non déterministe ?
-
+void Exec_Pas_Semiinfinie (MT *mt) {
 	int i;
 	delta del;
 	for(i = 0; i < mt->nbDeltas; i++) {
@@ -159,8 +155,46 @@ void Exec_Pas (MT *mt) {
 	}
 
 	if(i >= mt->nbDeltas) {
-		//Rejetter
-		// Plutôt une erreur car on a que des machines qui calculenT
+		fprintf(stderr, "ERREUR : Transition impossible\n");
+		exit(ERR_TRANS_IMP);
+	}
+
+	mt->etatCourant = del.etatArrivee;
+	mt->tete->contenu = del.lettreEc;
+
+	switch(del.dep) {
+		case droite: 
+			if(mt->tete->suiv == NULL) {
+				Ajout_Case_Suiv(mt->tete);
+			}
+			mt->tete = mt->tete->suiv;
+			break;
+
+		case gauche:
+			if(mt->tete->prec == NULL) {
+				break;
+			}
+			mt->tete = mt->tete->prec;
+			Suppr_Case_Suiv(mt->tete);
+			break;
+
+		case place:
+			break;
+	}
+}
+
+void Exec_Pas_Biinfinie (MT *mt) {
+	int i;
+	delta del;
+	for(i = 0; i < mt->nbDeltas; i++) {
+		del = mt->transitions[i];
+		if(del.etatDepart == mt->etatCourant && del.lettreLue == mt->tete->contenu) 
+			break;
+	}
+
+	if(i >= mt->nbDeltas) {
+		fprintf(stderr, "ERREUR : Transition impossible\n");
+		exit(ERR_TRANS_IMP);
 	}
 
 	mt->etatCourant = del.etatArrivee;
@@ -188,14 +222,32 @@ void Exec_Pas (MT *mt) {
 	}
 }
 
-void Exec_Total(MT *mt) {
+void Exec_Total(MT *mt, bool biinfinie) {
 	uint64_t iter;
 	iter = 1;
-	while(mt->etatCourant != mt->etatFinal) {
-		printf("Etape %u :\n", iter);
-		Exec_Pas(mt);
-		Affiche_Bande(mt->tete);
+	if(biinfinie) {
+		while(mt->etatCourant != mt->etatFinal) {
+			printf("Etape %lu :\n", iter);
+			printf("Etat courant : %c\n", mt->etatCourant);
+			Affiche_Bande(mt->tete);
+			Exec_Pas_Biinfinie(mt);
+			iter++;
+		}
 	}
+
+	else {
+		while(mt->etatCourant != mt->etatFinal) {
+			printf("Etape %lu :\n", iter);
+			printf("Etat courant : %c\n", mt->etatCourant);
+			Affiche_Bande(mt->tete);
+			Exec_Pas_Semiinfinie(mt);
+			iter++;
+		}
+	}
+
+	printf("Fin du calcul\n");
+	printf("Etat courant : %c\n", mt->etatCourant);
+	Affiche_Bande(mt->tete);
 }
 
 
@@ -211,6 +263,13 @@ void Affiche_Bande(bande *b) {
 
 		ecr = ecr->suiv;
 	}
+	if(ecr == b) printf(">%c<\n", ecr->contenu);
+	else printf("%c\n", ecr->contenu);
+}
+
+
+void Ecriture_MT(MT *mt, const char *chemin) {
+
 }
 
 

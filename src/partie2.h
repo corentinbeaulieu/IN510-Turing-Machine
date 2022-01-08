@@ -4,9 +4,9 @@
 
 #include "partie1.h"
 
-MT Biinfini_Vers_Infini_Droite (char *, char *);
+MT Question6 (const char *);
 
-MT Question7 (char *, char *);
+MT Question7 (const char *);
 
 
 
