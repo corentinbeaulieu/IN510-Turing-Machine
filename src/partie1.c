@@ -1,5 +1,6 @@
 
 #include "partie1.h"
+#include <string.h>
 
 bande *Init_Bande(const char *mot) {
 	bande *b, *prec;
@@ -42,9 +43,57 @@ bande *Init_Bande(const char *mot) {
  *  - La moindre faute dans le fichier par rapport à cela produit une erreur
  */
 delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char *etatFinal) {
-	// A Implémenter
+	FILE *file;
+	file = fopen (fichier, "r");
 
-	delta *transitions;
+	if (!file) {
+		printf("\nErreur : le fichier %s n'a pas pu être ouvert.\n\n", fichier);
+		exit(2);
+	}
+
+	char buff[255];
+	char delim[2] = ",";
+
+	//On calcule le nombre de transitions (nombre de lignes - la ligne d'état final)
+	*nbDeltas = -1;
+
+	while (fgets(buff, 255, file)) (*nbDeltas)++;
+	rewind(file);
+
+	delta *transitions = malloc(sizeof(delta) * *nbDeltas);
+
+	//On récupère l'état final (première ligne)
+	fgets(etatFinal, 255, file);
+
+	//Puis les transitions
+	int i = 0;
+	while (fgets(buff, 255, file)) {
+		char *token = strtok(buff, delim);
+		transitions[i].etatDepart = token[0];
+
+		token = strtok(NULL, delim);
+		transitions[i].lettreLue = token[0];
+
+		token = strtok(NULL, delim);
+		transitions[i].etatArrivee = token[0];
+
+		token = strtok(NULL, delim);
+		transitions[i].lettreEc = token[0];
+
+
+		token = strtok(NULL, delim);
+		if (token[0] == '<')
+			transitions[i].dep = gauche;
+		else if (token[0] == '>')
+			transitions[i].dep = droite;
+		else if (token[0] == '-')
+			transitions[i].dep = place;
+
+		i++;
+	}
+
+	fclose(file);
+
 	return transitions;
 }
 
@@ -184,4 +233,3 @@ void Desalloc_MT(MT *mt) {
 	free(mt->transitions);
 	mt->transitions = NULL;
 }
-
