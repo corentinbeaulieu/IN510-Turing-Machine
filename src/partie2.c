@@ -273,7 +273,7 @@ MT Question7 (const char *fichier) {
     MT mt;
     mt = Init_MT(fichier, "_");
 
-    int m = 6;
+    int m = 14;
     int nbDelta = m*mt.nbDeltas;
     //Et on y ajoute toutes les transitions de la machine à simuler
     delta *trans = malloc(sizeof(delta) * nbDelta);
@@ -331,7 +331,7 @@ MT Question7 (const char *fichier) {
         //On traduit la transition de base par nos nouvelles transitions
         //la première contient les instructions suivantes dans son nom i.e. "0>>A" puis ">>A" ">A" A
         strcpy(trans[m*i+2].etatDepart, trans[m*i+1].etatArrivee);
-        trans[m*i+2].lettreLue = '*';
+        trans[m*i+2].lettreLue = '0';
         if((mt.transitions[i].lettreEc == 'a') || (mt.transitions[i].lettreEc == 'c')) {
             trans[m*i+2].lettreEc = '0';
         } 
@@ -367,15 +367,15 @@ MT Question7 (const char *fichier) {
 
 
         strcpy(trans[m*i+3].etatDepart, trans[m*i+2].etatArrivee);
-        trans[m*i+3].lettreLue = '*';
+        trans[m*i+3].lettreLue = '0';
         trans[m*i+3].lettreEc = trans[m*i+3].etatDepart[0];
         strcpy(trans[m*i+3].etatArrivee, trans[m*i+3].etatDepart);
         trans[m*i+3].dep = place;
         memmove(trans[m*i+3].etatArrivee, trans[m*i+3].etatArrivee+1, 8);
 
         strcpy(trans[m*i+4].etatDepart, trans[m*i+3].etatArrivee);
-        trans[m*i+4].lettreLue = '*';
-        trans[m*i+4].lettreEc = '*';
+        trans[m*i+4].lettreLue = '0';
+        trans[m*i+4].lettreEc = '0';
         strcpy(trans[m*i+4].etatArrivee, trans[m*i+4].etatDepart);
         switch(trans[m*i+4].etatDepart[0]) {
             case '>':
@@ -392,8 +392,8 @@ MT Question7 (const char *fichier) {
 
 
         strcpy(trans[m*i+5].etatDepart, trans[m*i+4].etatArrivee);
-        trans[m*i+5].lettreLue = '*';
-        trans[m*i+5].lettreEc = '*';
+        trans[m*i+5].lettreLue = '0';
+        trans[m*i+5].lettreEc = '0';
         strcpy(trans[m*i+5].etatArrivee, trans[m*i+5].etatDepart);
         switch(trans[m*i+5].etatDepart[0]) {
             case '>':
@@ -407,6 +407,26 @@ MT Question7 (const char *fichier) {
                 break;
         }
         memmove(trans[m*i+5].etatArrivee, trans[m*i+5].etatArrivee+1, 8);
+
+        for (int j = 0; j < 4; j++) {
+            strcpy(trans[m*i+6+j].etatDepart,trans[m*i+2+j].etatDepart);
+            trans[m*i+6+j].lettreLue = '1';
+            strcpy(trans[m*i+6+j].etatArrivee,trans[m*i+2+j].etatArrivee);
+            if (j < 2)
+                trans[m*i+6+j].lettreEc = trans[m*i+2+j].lettreEc;
+            else
+                trans[m*i+6+j].lettreEc = '1';
+            trans[m*i+6+j].dep = trans[m*i+2+j].dep;
+
+            strcpy(trans[m*i+10+j].etatDepart,trans[m*i+2+j].etatDepart);
+            trans[m*i+10+j].lettreLue = '_';
+            strcpy(trans[m*i+10+j].etatArrivee,trans[m*i+2+j].etatArrivee);
+            if (j < 2)
+                trans[m*i+10+j].lettreEc = trans[m*i+2+j].lettreEc;
+            else
+                trans[m*i+10+j].lettreEc = '_';
+            trans[m*i+10+j].dep = trans[m*i+2+j].dep;
+        }
     }
 
 
