@@ -91,13 +91,25 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 
 
 		token = strtok(NULL, delim);
-		if (token[0] == '<')
-			transitions[i].dep = gauche;
-		else if (token[0] == '>')
-			transitions[i].dep = droite;
-		else if (token[0] == '-')
-			transitions[i].dep = place;
+		switch(token[0]) {
+			case '<':
+				transitions[i].dep = gauche;
+				break;
 
+			case '>':
+				transitions[i].dep = droite;
+				break;
+
+			case '-':
+				transitions[i].dep = place;
+				break;
+
+			default:
+				fprintf(stderr, "ERREUR: %c n'est pas un déplacment valide", token[0]);
+				free(transitions);
+				exit(ERR_USAGE);
+				break;
+		}
 		i++;
 	}
 
@@ -254,7 +266,7 @@ void Exec_Total(MT *mt, bool biinfinie) {
 		}
 	}
 
-	printf("Fin du calcul\n");
+	printf("Fin du calcul en %lu étapes\n", iter);
 	printf("Etat courant : %s\n", mt->etatCourant);
 	Affiche_Bande(mt->tete);
 }
@@ -266,12 +278,12 @@ void Affiche_Bande(bande *b) {
 	while(ecr->prec != NULL) ecr = ecr->prec;
 
 	while(ecr->suiv != NULL) {
-		if(ecr == b) printf(">%c< ", ecr->contenu);
+		if(ecr == b) printf(" >%c<  ", ecr->contenu);
 		else printf("%c ", ecr->contenu);
 
 		ecr = ecr->suiv;
 	}
-	if(ecr == b) printf(">%c<\n\n", ecr->contenu);
+	if(ecr == b) printf(" >%c<\n\n", ecr->contenu);
 	else printf("%c\n\n", ecr->contenu);
 }
 
