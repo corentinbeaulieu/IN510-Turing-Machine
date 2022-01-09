@@ -29,8 +29,8 @@ test: mt
 
 .PHONY: debug
 debug:
-	gcc -g main.c io.h io.c mt.c mt.h -o mt
-	gdb mt
+	gcc -g main.c partie1.c partie1.h partie2.c partie2.h partie3.c partie3.h -o mt
+	gdb ./mt
 
 
 .PHONY:clean

@@ -60,7 +60,7 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 	while (fgets(buff, 255, file)) (*nbDeltas)++;
 	rewind(file);
 
-	delta *transitions = malloc(sizeof(delta) * *nbDeltas);
+	delta *transitions = malloc(sizeof(delta) * (*nbDeltas));
 
 	//On récupère l'état final (première ligne)
 	fgets(etatFinal, 8, file);
@@ -271,8 +271,8 @@ void Affiche_Bande(bande *b) {
 
 		ecr = ecr->suiv;
 	}
-	if(ecr == b) printf(">%c<\n", ecr->contenu);
-	else printf("%c\n", ecr->contenu);
+	if(ecr == b) printf(">%c<\n\n", ecr->contenu);
+	else printf("%c\n\n", ecr->contenu);
 }
 
 
