@@ -1,17 +1,16 @@
 
-#include "partie3.h"
+#include "partie2.h"
 
 int main (int argc, char *const argv[]) {
 
 	bool biinfinie; biinfinie = false;
 	bool question6; question6 = false;
-	bool question7; question7 = false;
-	bool optimisation; optimisation = false;
+	bool question7; question7 = false;;
 
 	char option;
 
 	opterr = 0;
-	while((option = getopt(argc, argv, "b67O")) != -1) {
+	while((option = getopt(argc, argv, "b67")) != -1) {
 		switch(option) {
 			case 'b':
 				biinfinie = true;
@@ -23,10 +22,6 @@ int main (int argc, char *const argv[]) {
 
 			case '7':
 				question7 = true;
-				break;
-
-			case 'O':
-				optimisation = true;
 				break;
 
 			case '?':
@@ -46,30 +41,15 @@ int main (int argc, char *const argv[]) {
 
 	MT mt;
 
-	if(question6 || question7 || optimisation) {
+	if(question6 || question7) {
 		if((argc - optind) == 1) {
 			if(question6) {
 				mt = Question6(argv[optind]);
-				if(optimisation) {
-					Question9(&mt);
-					Question10(&mt);
-				}
-				Ecriture_MT(&mt, "sortieMT");
-			}
-
-			else if(question7) {
-				mt = Question7(argv[optind]);
-				if(optimisation) {
-					Question9(&mt);
-					Question10(&mt);
-				}
 				Ecriture_MT(&mt, "sortieMT");
 			}
 
 			else {
-				mt = Init_MT(argv[optind], "_");
-				Question9(&mt);
-				Question10(&mt);
+				mt = Question7(argv[optind]);
 				Ecriture_MT(&mt, "sortieMT");
 			}
 		} 
@@ -77,29 +57,13 @@ int main (int argc, char *const argv[]) {
 		else if((argc - optind) == 2) {
 			if(question6) {
 				mt = Question6(argv[optind]);
-				if(optimisation) {
-					Question9(&mt);
-					Question10(&mt);
-				}
-				Ecriture_MT(&mt, argv[optind+1]);
-			}
-
-			else if(question7) {
-				mt = Question7(argv[optind]);
-				if(optimisation) {
-					Question9(&mt);
-					Question10(&mt);
-				}
 				Ecriture_MT(&mt, argv[optind+1]);
 			}
 
 			else {
-				mt = Init_MT(argv[optind], "_");
-				Question9(&mt);
-				Question10(&mt);
+				mt = Question7(argv[optind]);
 				Ecriture_MT(&mt, argv[optind+1]);
 			}
-
 		}
 
 		else {
@@ -115,7 +79,6 @@ int main (int argc, char *const argv[]) {
 
 	else {
 		mt = Init_MT(argv[optind], argv[optind+1]);
-		Ecriture_MT(&mt, "sortieMT");
 		Exec_Total(&mt, biinfinie);
 	}
 

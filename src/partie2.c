@@ -31,7 +31,7 @@ MT Question6 (const char *fichier) {
 
     mt.etatFinal[0]++;
     strcpy(final, mt.etatFinal);
-    mt.etatFinal[0]++;
+    strcpy(mt.etatFinal, "nvFinal");
 
     i = mt.nbDeltas;
     //Pour chaque état non final on ajoute 10 transitions. On aujoute 19 transitions de plus.

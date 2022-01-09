@@ -63,7 +63,9 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 	delta *transitions = malloc(sizeof(delta) * (*nbDeltas));
 
 	//On récupère l'état final (première ligne)
-	fgets(etatFinal, 8, file);
+	fgets(buff, 255, file);
+	strncpy(etatFinal, buff, 7);
+	etatFinal[7] ='\0';
 	int j;
 	for(j = 0; j < 8; j++) {
 		if(etatFinal[j] == '\n') {
