@@ -3,6 +3,8 @@
 
 int main (int argc, char *const argv[]) {
 
+
+	// Gestion des options
 	bool biinfinie; biinfinie = false;
 	bool question6; question6 = false;
 	bool question7; question7 = false;;

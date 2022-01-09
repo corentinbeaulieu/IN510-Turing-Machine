@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+// Enumeration des erreurs couvertes pour valeurs de retour
 enum ERREUR {
 	ERR_USAGE=1,
 	ERR_OUV_FICHIER,
@@ -17,13 +18,14 @@ enum ERREUR {
 	ERR_HORS_BANDE
 };
 
-
+// Structure d'une bande sous forme d'une liste doublement chainée
 typedef struct Bande {
 	char contenu;
 	struct Bande *prec;
 	struct Bande *suiv;
 } bande;
 
+// Structure d'une delta transition sous forme d'un quintuplet
 typedef struct Delta {
 	char etatDepart[8];
 	char lettreLue;
@@ -36,6 +38,7 @@ typedef struct Delta {
 	} dep;
 } delta;
 
+// Structure d'une machine de Turing 
 typedef struct MachineTuring {
 	char etatCourant[8];
 	bande* tete;

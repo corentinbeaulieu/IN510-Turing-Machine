@@ -1,7 +1,7 @@
 
 #include "partie1.h"
 
-
+// Fonction créant un structure bande à partir d'un mot
 bande *Init_Bande(const char *mot) {
 	bande *b, *prec;
 	b = NULL;
@@ -35,7 +35,7 @@ bande *Init_Bande(const char *mot) {
 	return b;
 }
 
-
+// Fonction parsant un fichier contenant le code d'une machine de Turing pour en extraire les informations dans les différentes structures
 /* Les restrictions du langage :
  *	- Le premier caractère est un majuscule qui représente l'état final
  *  - Les deltas transitions sont écrites sur une unique ligne avec des virgules comme séparateur
@@ -120,7 +120,7 @@ delta *Init_Delta(const char *fichier, uint16_t *nbDeltas, char etatFinal[8]) {
 	return transitions;
 }
 
-
+// Fonction renvoyant une structure de machine à partir d'un fichier contenant son code et un mot d'entrée
 MT Init_MT(const char *fichier, const char *mot) {
 	MT mt;
 	strcpy(mt.etatCourant, "A");
@@ -130,6 +130,7 @@ MT Init_MT(const char *fichier, const char *mot) {
 	return mt;
 }
 
+// Fonction ajoutant une case vide à la fin d'une' bande
 void Ajout_Case_Suiv(bande *b) {
 	b->suiv = malloc(sizeof(bande));
 	if(b->suiv == NULL) {
@@ -142,6 +143,7 @@ void Ajout_Case_Suiv(bande *b) {
 	b->suiv->prec = b;
 }
 
+// Fonction ajoutant une case vide au début d'une bande
 void Ajout_Case_Prec(bande *b) {
 	b->prec = malloc(sizeof(bande));
 	if(b->prec == NULL) {
@@ -154,6 +156,7 @@ void Ajout_Case_Prec(bande *b) {
 	b->prec->prec = NULL;
 }
 
+// Fonction supprimant une case vide à la fin d'une bande
 void Suppr_Case_Suiv(bande *b) {
 	if(b->suiv->contenu == '_' && b->suiv->suiv == NULL) {
 		free(b->suiv);
@@ -161,6 +164,7 @@ void Suppr_Case_Suiv(bande *b) {
 	}
 }
 
+// Fonction supprimant une case vide au début de la bande
 void Suppr_Case_Prec(bande *b) {
 	if(b->prec->contenu == '_' && b->prec->prec == NULL) {
 		free(b->prec);
@@ -168,6 +172,7 @@ void Suppr_Case_Prec(bande *b) {
 	}
 }
 
+// Fonction simulant un pas de calcul d'une machine sur une bande infinié à droite
 void Exec_Pas_Semiinfinie (MT *mt) {
 	int i;
 	delta del;
@@ -206,6 +211,7 @@ void Exec_Pas_Semiinfinie (MT *mt) {
 	}
 }
 
+// Fonction simulant un pas de calcul d'une machine sur un bande bi infinie
 void Exec_Pas_Biinfinie (MT *mt) {
 	int i;
 	delta del;
@@ -245,6 +251,7 @@ void Exec_Pas_Biinfinie (MT *mt) {
 	}
 }
 
+// Fonction simulant toute l'exécution d'un machine 
 void Exec_Total(MT *mt, bool biinfinie) {
 	uint64_t iter;
 	iter = 1;
@@ -273,7 +280,7 @@ void Exec_Total(MT *mt, bool biinfinie) {
 	Affiche_Bande(mt->tete);
 }
 
-
+// Fonction affichant l'état courant de la bande
 void Affiche_Bande(bande *b) {
 	bande *ecr;
 	ecr = b;
@@ -289,7 +296,7 @@ void Affiche_Bande(bande *b) {
 	else printf("%c\n\n", ecr->contenu);
 }
 
-
+// Fonction qui écrit le code d'une machine dans un fichier
 void Ecriture_MT(MT *mt, const char *chemin) {
 	FILE *file;
 	file = fopen (chemin, "w");
@@ -321,8 +328,7 @@ void Ecriture_MT(MT *mt, const char *chemin) {
 	fclose(file);
 }
 
-
-
+// Fonction qui désalloue une structure de bande
 void Desalloc_Bande(bande *b) {
 	while(b->prec != NULL) b = b->prec;
 
@@ -335,7 +341,7 @@ void Desalloc_Bande(bande *b) {
 	free(b);
 }
 
-
+// Fonction qui désalloue une structure de machine
 void Desalloc_MT(MT *mt) {
 	Desalloc_Bande(mt->tete);
 	mt->tete = NULL;

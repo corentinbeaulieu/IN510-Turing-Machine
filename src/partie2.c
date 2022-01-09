@@ -1,7 +1,7 @@
 
 #include "partie2.h"
 
-
+// Fonction réduisant le code d'une machine sur ruban bi infini vers une machine sur ruban infini à droite
 MT Question6 (const char *fichier) {
     MT mt;
     mt = Init_MT(fichier, "_");
@@ -269,6 +269,7 @@ MT Question6 (const char *fichier) {
     return mt;
 }
 
+// Fonction réduisant le code d'une machine sur l'alphabet {a,b,c,d} vers une machine sur l'alphabet {0,1}
 MT Question7 (const char *fichier) {
     MT mt;
     mt = Init_MT(fichier, "_");

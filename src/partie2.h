@@ -9,7 +9,4 @@ MT Question6 (const char *);
 MT Question7 (const char *);
 
 
-
-
-
 #endif
