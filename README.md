@@ -11,7 +11,7 @@ The aim of this project is to build a program that emulates a Turing machine.
 You will find in this repository:
 - `compte_rendu.pdf` the report submitted with the project (written in french).
 - `src` a directory with the source code files.
-- `mt` a directory with some examples of input for our application.
+- `MT` a directory with some examples of input for our application.
 
 ## Usage
 
