@@ -1,7 +1,7 @@
 src= src/main.c src/partie1.c src/partie1.h src/partie2.c src/partie2.h
 files= Makefile compte_rendu.pdf
 MT= MT/mt1 MT/mt2 MT/mt3 MT/mtQ6 MT/mtQ7
-repository= YS_BEAULIEU_SCHWEISTHAL
+repository= YS_BEAULIEU_Corentin-SCHWEISTHAL_Victor
 
 .PHONY: run
 run: mt
